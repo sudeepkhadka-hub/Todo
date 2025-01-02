@@ -1,5 +1,20 @@
 const inputBox = document.getElementById('input-box');
 const listContainer = document.getElementById('list-container');
+const completedCounter = document.getElementById('completed-counter');
+const uncompletedCounter = document.getElementById('uncompleted-counter');
+
+
+
+function updateCounter(){
+  const totalTask = listContainer.children.length;
+  const completedTask = listContainer.querySelectorAll('input[type="checkbox"]:checked').length;
+  const uncompletedTask = totalTask - completedTask;
+
+  completedCounter.textContent = completedTask;
+  uncompletedCounter.textContent = uncompletedTask;
+}
+
+
 
 function addTask() {
   const task = inputBox.value.trim();
@@ -19,15 +34,20 @@ function addTask() {
   `;
 
   // Add event listeners to Edit and Delete buttons
-  const editButton = li.querySelector('.edit-btn');
   const deleteButton = li.querySelector('.delete-btn');
+  const editButton = li.querySelector('.edit-btn');
+  const checkbox = li.querySelector('input[type="checkbox"]');
   
   editButton.addEventListener('click', () => editTask(li));
-  deleteButton.addEventListener('click', () => deleteTask(li));
+  deleteButton.addEventListener('click', () => {deleteTask(li), updateCounter();
+  });
+  checkbox.addEventListener('change', updateCounter);
 
   listContainer.appendChild(li);
   inputBox.value = "";  
+  updateCounter();
 }
+
 
 function editTask(taskItem) {
   const span = taskItem.querySelector('label span');
@@ -41,3 +61,6 @@ function editTask(taskItem) {
 function deleteTask(taskItem) {
   listContainer.removeChild(taskItem);
 }
+
+addTask();
+updateCounter();
